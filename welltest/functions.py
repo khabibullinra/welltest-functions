@@ -1,10 +1,10 @@
 """
 simple welltest functions
-ver 0.1 from 15/10/2021
+ver 0.2 from 20/01/2022
 Khabibullin Rinat
 """
-
-
+import numpy as np
+from scipy.special import  expi
 
 # Define functions for converting dimensional variables into dimensionless variables and vice versa
 # to be used later for graphing and calculations
@@ -83,3 +83,17 @@ def pd_from_p(p_atma, k_mD=10, h_m=10, q_sm3day=20, b_m3m3=1.2, mu_cP=1, pi_atma
     return (pi_atma - p_atma) / (18.41 * q_sm3day * b_m3m3 * mu_cP) * k_mD * h_m 
 
 
+# Line source solution for diffusivity equation
+def pd_ei(td, rd=1):
+    """
+    Line source solution for diffusivity equation
+    td - time dimensionless 
+    rd - radius dimensionless, distance from well
+    """
+    # when calculating, make sure that td=0 will not affect the calculation, even if td is an array and only one element is zero
+    td = np.array(td, dtype = float)
+    return np.multiply(-0.5, 
+                       expi(np.divide(-rd**2 / 4 , 
+                                      td, 
+                                      out=np.zeros_like(td), where=td!=0)), 
+                       out=np.zeros_like(td), where=td!=0)
